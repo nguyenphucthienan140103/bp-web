@@ -106,7 +106,7 @@ const products = [
     price: 89.99,
     description: "Elegant sterling silver necklace with pendant",
     image:
-      "https://laimut.com/wp-content/uploads/Day-Chuyen-Swarovski-Chinh-Hang-Mixed-Cuts-Mesmera-Necklace-01.jpg",
+      "https://www.matapayals.com/cdn/shop/files/SuperlativeZirconNecklace.jpg?v=1728900498&width=900",
     category: "Accessories",
   },
 ];
