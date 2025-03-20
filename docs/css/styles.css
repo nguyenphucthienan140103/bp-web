@@ -159,7 +159,7 @@ nav a.active {
 }
 
 .search-input {
-  width: 100%;
+  width: 95%;
   padding: 15px 15px 15px 45px;
   border: 2px solid var(--light-gray);
   border-radius: 12px;
@@ -182,7 +182,7 @@ nav a.active {
 
 .category-filter {
   min-width: 200px;
-  padding: 15px 35px 15px 55px;
+  padding: 15px 35px 15px 35px;
   border: 2px solid var(--light-gray);
   border-radius: 12px;
   font-size: 1rem;
