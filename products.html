@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Products - BP-Shop</title>
+    <link rel="stylesheet" href="css/styles.css" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <!-- Feather Icons -->
+    <script src="https://unpkg.com/feather-icons"></script>
+  </head>
+  <body>
+    <header>
+      <div class="container">
+        <h1>BP-Shop</h1>
+        <nav>
+          <ul>
+            <li><a href="index.html">Home</a></li>
+            <li><a href="products.html" class="active">Products</a></li>
+            <li>
+              <a href="#" id="cart-link"
+                >Cart (<span id="cart-count">0</span>)</a
+              >
+            </li>
+          </ul>
+        </nav>
+      </div>
+    </header>
+
+    <main>
+      <section class="products-header">
+        <div class="container">
+          <h2 class="section-title">Our Products</h2>
+          <div class="filters">
+            <div class="search-wrapper">
+              <i data-feather="search" class="search-icon"></i>
+              <input
+                type="text"
+                id="search-input"
+                placeholder="Search for products..."
+                class="search-input"
+              />
+            </div>
+            <select id="category-filter" class="category-filter">
+              <option value="">All Categories</option>
+              <option value="Electronics">Electronics</option>
+              <option value="Fashion">Fashion</option>
+              <option value="Accessories">Accessories</option>
+            </select>
+          </div>
+        </div>
+      </section>
+
+      <section class="products-grid">
+        <div class="container">
+          <div id="search-results"></div>
+          <div class="product-list" id="all-products">
+            <!-- Products will be dynamically inserted here -->
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <!-- Social Media Icons -->
+    <div class="social-icons">
+      <a
+        href="https://m.me/your-messenger-id"
+        target="_blank"
+        class="social-icon messenger-icon"
+        title="Chat on Messenger"
+      ></a>
+    </div>
+
+    <footer class="footer">
+      <div class="container">
+        <p>&copy; 2025 BP-Shop. All rights reserved.</p>
+      </div>
+    </footer>
+
+    <div id="cart-modal" class="modal">
+      <div class="modal-content">
+        <span class="close">&times;</span>
+        <h2>Shopping Cart</h2>
+        <div id="cart-items">
+          <!-- Cart items will be dynamically inserted here -->
+        </div>
+        <div id="cart-total">
+          <p>Total: $<span id="total-amount">0.00</span></p>
+          <button id="checkout-btn" class="button">Checkout</button>
+        </div>
+      </div>
+    </div>
+
+    <script src="js/api.js"></script>
+    <script src="js/cart.js"></script>
+    <script src="js/scripts.js"></script>
+    <script>
+      // Initialize Feather icons
+      feather.replace();
+
+      // Products page specific JavaScript
+      document.addEventListener("DOMContentLoaded", async () => {
+        const productList = document.getElementById("all-products");
+
+        // Function to display products
+        const displayProducts = (products) => {
+          productList.innerHTML = "";
+          if (products.length === 0) {
+            productList.innerHTML =
+              '<p class="no-results">No products found</p>';
+            return;
+          }
+          products.forEach((product) => {
+            const productElement = createProductElement(product);
+            productList.appendChild(productElement);
+          });
+        };
+
+        // Load initial products
+        try {
+          const products = await apiService.getAllProducts();
+          displayProducts(products);
+        } catch (error) {
+          console.error("Error loading products:", error);
+        }
+
+        // Category filter functionality
+        const categoryFilter = document.getElementById("category-filter");
+        categoryFilter.addEventListener("change", async (e) => {
+          try {
+            const category = e.target.value;
+            const filteredProducts = category
+              ? await apiService.getProductsByCategory(category)
+              : await apiService.getAllProducts();
+            displayProducts(filteredProducts);
+          } catch (error) {
+            console.error("Error filtering products:", error);
+          }
+        });
+
+        // Search functionality
+        const searchInput = document.getElementById("search-input");
+        let timeoutId;
+        searchInput.addEventListener("input", (e) => {
+          clearTimeout(timeoutId);
+          timeoutId = setTimeout(async () => {
+            try {
+              const query = e.target.value.trim();
+              if (query.length >= 2) {
+                const results = await apiService.searchProducts(query);
+                displayProducts(results);
+              } else if (query.length === 0) {
+                const allProducts = await apiService.getAllProducts();
+                displayProducts(allProducts);
+              }
+            } catch (error) {
+              console.error("Error searching products:", error);
+            }
+          }, 300);
+        });
+      });
+    </script>
+  </body>
+</html>
